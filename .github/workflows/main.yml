@@ -6,8 +6,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check Pexels key is set
+        run: |
+          if [ -z "$PEXELS_API_KEY" ]; then
+            echo "::error::Repository secret PEXELS_API_KEY is missing or empty"
+            exit 1
+          fi
 
       - uses: actions/setup-java@v4
         with:
@@ -23,7 +32,6 @@ jobs:
           DIR=$(dirname "$(find . -name settings.gradle.kts | head -1)")
           echo "Project folder: $DIR"
           cd "$DIR"
-          echo "PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}" > secrets.properties
           gradle assembleRelease --no-daemon
 
       - uses: actions/upload-artifact@v4
