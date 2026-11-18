@@ -187,4 +187,9 @@
     <string name="explore_similar_ideas_title">ایده‌های مشابه</string>
     <string name="explore_similar_ideas_loading">در حال یافتن ایده‌های مشابه…</string>
     <string name="explore_similar_ideas_error">دریافت ایده‌های مشابه ناموفق بود.</string>
+
+    <!-- Stage 35: Settings option to show/hide the live pose dots and guidance text. -->
+    <string name="pose_guides_title">نقاط و راهنمایی ژست</string>
+    <string name="pose_guides_on">نمایش</string>
+    <string name="pose_guides_off">مخفی</string>
 </resources>

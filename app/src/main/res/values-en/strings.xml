@@ -187,4 +187,9 @@
     <string name="explore_similar_ideas_title">Similar Ideas</string>
     <string name="explore_similar_ideas_loading">Finding similar ideas…</string>
     <string name="explore_similar_ideas_error">Couldn\'t load similar ideas.</string>
+
+    <!-- Stage 35: Settings option to show/hide the live pose dots and guidance text. -->
+    <string name="pose_guides_title">Pose dots &amp; guidance</string>
+    <string name="pose_guides_on">Show</string>
+    <string name="pose_guides_off">Hide</string>
 </resources>

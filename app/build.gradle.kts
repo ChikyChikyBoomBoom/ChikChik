@@ -25,7 +25,11 @@ val secretsProps = Properties()
 if (secretsPropsFile.exists()) {
     secretsPropsFile.inputStream().use { secretsProps.load(it) }
 }
-val pexelsApiKey: String = secretsProps.getProperty("PEXELS_API_KEY") ?: ""
+// Stage 35: also accepted from the PEXELS_API_KEY environment variable (what the GitHub Actions
+// workflow sets from the repository secret), so CI builds don't depend on a generated file.
+val pexelsApiKey: String = (secretsProps.getProperty("PEXELS_API_KEY")
+    ?: System.getenv("PEXELS_API_KEY")
+    ?: "").trim()
 
 android {
     namespace = "com.chikchik.posecamera"

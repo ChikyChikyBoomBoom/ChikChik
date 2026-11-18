@@ -17,6 +17,7 @@ object CameraPreferences {
     private const val PREFS_NAME = "camera_prefs"
     private const val KEY_GRID_ENABLED = "grid_enabled"
     private const val KEY_LANGUAGE = "app_language"
+    private const val KEY_POSE_GUIDES_ENABLED = "pose_guides_enabled"
 
     /** Off by default, matching the app's general preference for maximum preview visibility. */
     fun isGridEnabled(context: Context): Boolean =
@@ -24,6 +25,18 @@ object CameraPreferences {
 
     fun setGridEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit().putBoolean(KEY_GRID_ENABLED, enabled).apply()
+    }
+
+    /**
+     * Stage 35: whether the live pose dots/skeleton and the on-screen pose guidance text are
+     * shown over the camera. On by default, so existing behavior is unchanged until the user
+     * switches it off in Settings.
+     */
+    fun isPoseGuidesEnabled(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_POSE_GUIDES_ENABLED, true)
+
+    fun setPoseGuidesEnabled(context: Context, enabled: Boolean) {
+        prefs(context).edit().putBoolean(KEY_POSE_GUIDES_ENABLED, enabled).apply()
     }
 
     /**

@@ -294,6 +294,8 @@ private fun CameraFlow(
     // via SharedPreferences (rememberSaveable alone would not survive a real app close), read
     // once when this Composable first enters, then kept in sync on every toggle.
     var gridEnabled by remember { mutableStateOf(CameraPreferences.isGridEnabled(context)) }
+    // Stage 35: show/hide the live pose dots and the pose guidance text (persisted, default on).
+    var poseGuidesEnabled by remember { mutableStateOf(CameraPreferences.isPoseGuidesEnabled(context)) }
     // Stage 27: which language chip should show as selected. Reflects the user's explicit
     // choice if there is one (CameraPreferences.getLanguage), otherwise falls back to whatever
     // language is actually showing right now (the system-resolved one, same as Stage 26) so the
@@ -441,6 +443,11 @@ private fun CameraFlow(
                     gridEnabled = enabled
                     CameraPreferences.setGridEnabled(context, enabled)
                 },
+                poseGuidesEnabled = poseGuidesEnabled,
+                onPoseGuidesEnabledChange = { enabled ->
+                    poseGuidesEnabled = enabled
+                    CameraPreferences.setPoseGuidesEnabled(context, enabled)
+                },
                 currentLanguage = currentLanguage,
                 onLanguageChange = { language ->
                     currentLanguage = language
@@ -535,6 +542,8 @@ private fun CameraWithOverlay(
     onAspectRatioWideChange: (Boolean) -> Unit,
     gridEnabled: Boolean,
     onGridEnabledChange: (Boolean) -> Unit,
+    poseGuidesEnabled: Boolean,
+    onPoseGuidesEnabledChange: (Boolean) -> Unit,
     currentLanguage: String,
     onLanguageChange: (String) -> Unit,
     onPickImage: () -> Unit,
@@ -768,6 +777,7 @@ private fun CameraWithOverlay(
         takePhoto(
             context = context,
             imageCapture = imageCapture,
+            mirrorHorizontally = lensFacing == CameraSelector.LENS_FACING_FRONT,
             onCaptured = { file ->
                 isCapturing = false
                 onPhotoCaptured(file)
@@ -860,7 +870,7 @@ private fun CameraWithOverlay(
         // Layer 1.6 (Stage 11): live pose keypoints - simple, temporary visualization only, no
         // comparison/guidance yet. Purely visual (no pointerInput), so taps still pass through
         // to the tap-to-focus layer above.
-        livePose?.let { pose ->
+        livePose?.takeIf { poseGuidesEnabled }?.let { pose ->
             PoseOverlay(
                 pose = pose,
                 imageWidth = livePoseImageWidth,
@@ -969,8 +979,10 @@ private fun CameraWithOverlay(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            PoseStatusBadge(visualState = poseVisualState)
-            PoseGuidanceBar(instruction = guidanceInstruction)
+            if (poseGuidesEnabled) {
+                PoseStatusBadge(visualState = poseVisualState)
+                PoseGuidanceBar(instruction = guidanceInstruction)
+            }
         }
 
         // Bottom: overlay controls (when a reference image is set), zoom slider
@@ -1065,6 +1077,8 @@ private fun CameraWithOverlay(
             onAspectRatioWideChange = onAspectRatioWideChange,
             gridEnabled = gridEnabled,
             onGridEnabledChange = onGridEnabledChange,
+            poseGuidesEnabled = poseGuidesEnabled,
+            onPoseGuidesEnabledChange = onPoseGuidesEnabledChange,
             currentLanguage = currentLanguage,
             onLanguageChange = onLanguageChange,
             canAdjustExposure = canAdjustExposure,
@@ -1608,6 +1622,8 @@ private fun AdvancedControlsSheet(
     onAspectRatioWideChange: (Boolean) -> Unit,
     gridEnabled: Boolean,
     onGridEnabledChange: (Boolean) -> Unit,
+    poseGuidesEnabled: Boolean,
+    onPoseGuidesEnabledChange: (Boolean) -> Unit,
     currentLanguage: String,
     onLanguageChange: (String) -> Unit,
     canAdjustExposure: Boolean,
@@ -1676,6 +1692,21 @@ private fun AdvancedControlsSheet(
                     label = stringResource(R.string.grid_off),
                     selected = !gridEnabled,
                     onClick = { onGridEnabledChange(false) }
+                )
+            }
+
+            // Stage 35: show/hide the live pose dots and guidance text - same ON/OFF chips.
+            SheetSectionTitle(stringResource(R.string.pose_guides_title))
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                ChoiceChip(
+                    label = stringResource(R.string.pose_guides_on),
+                    selected = poseGuidesEnabled,
+                    onClick = { onPoseGuidesEnabledChange(true) }
+                )
+                ChoiceChip(
+                    label = stringResource(R.string.pose_guides_off),
+                    selected = !poseGuidesEnabled,
+                    onClick = { onPoseGuidesEnabledChange(false) }
                 )
             }
 

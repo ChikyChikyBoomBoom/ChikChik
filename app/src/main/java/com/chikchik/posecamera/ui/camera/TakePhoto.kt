@@ -51,15 +51,24 @@ fun buildImageCapture(aspectRatio: Int = androidx.camera.core.AspectRatio.RATIO_
  * This is the real camera image: the reference overlay, the controls and every
  * other Compose UI element live in separate layers and are never part of it.
  * (No screenshot / view capture is used anywhere.)
+ *
+ * [mirrorHorizontally] is true for the front camera: its live preview is shown mirrored (like a
+ * mirror), but CameraX saves the un-mirrored sensor image, so without this the saved photo
+ * looked flipped left/right compared with what the user saw. Flipping the saved file makes it
+ * match the preview.
  */
 fun takePhoto(
     context: Context,
     imageCapture: ImageCapture,
+    mirrorHorizontally: Boolean = false,
     onCaptured: (File) -> Unit,
     onFailure: () -> Unit,
 ) {
     val file = newCaptureFile(context)
-    val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
+    val metadata = ImageCapture.Metadata().apply { isReversedHorizontal = mirrorHorizontally }
+    val outputOptions = ImageCapture.OutputFileOptions.Builder(file)
+        .setMetadata(metadata)
+        .build()
 
     try {
         imageCapture.takePicture(
