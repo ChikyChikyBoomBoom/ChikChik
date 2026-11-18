@@ -27,6 +27,11 @@ if (secretsPropsFile.exists()) {
 }
 // Stage 35: also accepted from the PEXELS_API_KEY environment variable (what the GitHub Actions
 // workflow sets from the repository secret), so CI builds don't depend on a generated file.
+// Optional size optimisation: `gradle assembleRelease -PabiOnly=arm64-v8a` builds an APK that
+// contains only that CPU architecture's native libraries (ML Kit ships big .so files for every
+// ABI). Without the property the build is the universal APK, exactly as before.
+val abiOnly: String? = providers.gradleProperty("abiOnly").orNull
+
 val pexelsApiKey: String = (secretsProps.getProperty("PEXELS_API_KEY")
     ?: System.getenv("PEXELS_API_KEY")
     ?: "").trim()
@@ -48,6 +53,12 @@ android {
         }
 
         buildConfigField("String", "PEXELS_API_KEY", "\"$pexelsApiKey\"")
+
+        if (abiOnly != null) {
+            ndk {
+                abiFilters += abiOnly
+            }
+        }
     }
 
     signingConfigs {
@@ -78,8 +89,9 @@ android {
         }
     }
 
-    // Universal APK: no ABI / density splits, no `ndk.abiFilters`. The app has no native
-    // (.so) libraries at all, so the single APK runs on arm64-v8a, armeabi-v7a, x86 and x86_64.
+    // No ABI / density splits. By default the APK is universal (arm64-v8a, armeabi-v7a, x86,
+    // x86_64 - the ML Kit pose models bring native libraries for each); pass -PabiOnly=<abi>
+    // (see above) to build a smaller single-architecture APK instead.
     splits {
         abi {
             isEnable = false
@@ -101,6 +113,13 @@ android {
         buildConfig = true
     }
     packaging {
+        if (abiOnly != null) {
+            // Compress native libs inside the APK -> smaller download/file (slightly larger
+            // once installed). Only applied to the single-ABI build.
+            jniLibs {
+                useLegacyPackaging = true
+            }
+        }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
