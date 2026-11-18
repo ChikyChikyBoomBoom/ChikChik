@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PEXELS_API_KEY: UHNwrtMvWliTUlKtr5c6liExzAHxkTBnNfUaVe6gb3jYvSKWNhEIkkNz
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +27,12 @@ jobs:
           DIR=$(dirname "$(find . -name settings.gradle.kts | head -1)")
           echo "Project folder: $DIR"
           cd "$DIR"
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$KEYSTORE_PASSWORD" ]; then
+            echo "::error::Secrets KEYSTORE_BASE64 / KEYSTORE_PASSWORD are missing"
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > chikchik-release.jks
+          printf 'storeFile=chikchik-release.jks\nstorePassword=%s\nkeyAlias=chikchik\nkeyPassword=%s\n' "$KEYSTORE_PASSWORD" "$KEYSTORE_PASSWORD" > keystore.properties
           gradle assembleRelease --no-daemon
 
       - uses: actions/upload-artifact@v4
