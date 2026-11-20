@@ -1,102 +1,105 @@
-# ChikChik 📸
+# ChikChik
 
-**English** · [فارسی](#فارسی)
+A mobile photography app focused on helping users compose photos, explore pose inspiration, and adjust camera settings from one place.
 
-An Android camera app that helps you recreate poses. Put a reference photo over the live camera preview, follow on-screen pose guidance, and browse the built-in Explore screen for new pose ideas.
+> **This README describes the free version using the screens currently available.** It documents only the features visible in the supplied screenshots; platform requirements, account features, pricing boundaries, and any additional capabilities should be added only after they are confirmed.
 
-## Features
+## Overview
 
-- **Camera** — front/back switch, zoom, tap to focus, flash, timer (3 / 5 / 10 s), grid, exposure and white balance controls.
-- **Reference overlay** — pick a photo from your gallery and place it over the preview: adjust opacity, move, pinch to scale, rotate, lock, reset, and flip it horizontally.
-- **Pose Coach** — live pose detection with dots and short on-screen guidance that tells you how to match the reference. You can show or hide the dots and guidance in Settings.
-- **Explore / Inspiration** — search and filter pose photos (gender, style, pose type), save Favorites, see History, find Similar Ideas, and tap **Use as Reference** to send a photo straight to the camera.
-- **Saved photos** — captures are saved to the `ChikChik` album and can be shared.
-- **Persian / English** — switch language from Settings.
-- **Settings** — grid, pose dots & guidance, language, contact, and an About section (version 1.0.0).
+ChikChik brings together three practical parts of the photo-taking process:
 
-## Privacy
+- **Explore & Inspiration** — browse photo-pose ideas and narrow them down with search and filters.
+- **Camera Settings** — adjust framing, guides, exposure, white balance, and focus preferences.
+- **Camera** — compose a shot using the live camera preview and on-screen controls.
 
-- Pose detection runs **on your device** (ML Kit bundled models). No camera frames are uploaded.
-- The internet permission is used **only** by Explore to load photos from the Pexels API.
-- The camera permission is required for the camera features.
+The goal of the free version is to make taking a better-planned photo easier, without needing to switch between separate inspiration and camera screens.
 
-## Tech stack
+## Features in the free version
 
-Kotlin · Jetpack Compose · CameraX · ML Kit Pose Detection · Pexels API
-Package `com.chikchik.posecamera` · minSdk 24 · targetSdk 35
+### 1. Explore & Inspiration
 
-## Build
+Find ideas before taking a photo.
 
-1. Get a free API key at <https://www.pexels.com/api/>.
-2. Copy `secrets.properties.example` to `secrets.properties` and set `PEXELS_API_KEY`
-   (or provide it as the `PEXELS_API_KEY` environment variable). Never commit this file.
-3. Build:
-   ```bash
-   ./gradlew assembleRelease
-   ```
-   Output: `app/build/outputs/apk/release/app-release.apk`
+![Explore search and filters](docs/images/01-explore-search-filters.jpg)
 
-**Smaller APK for modern phones (64-bit ARM only):**
-```bash
-./gradlew assembleRelease -PabiOnly=arm64-v8a
-```
-Without this option the APK is universal (arm64-v8a, armeabi-v7a, x86, x86_64) and larger.
+- Search the inspiration collection by keyword.
+- Filter ideas by **Gender** and **Style**.
+- Filter by pose type; the supplied screen shows **Mirror Selfie**.
+- Browse inspiration cards in a visual grid.
+- Use the heart icon on a card to mark an idea as a favorite.
+- Access the favorites and recently viewed/history areas from the screen header.
 
-**Signing:** copy `keystore.properties.example` to `keystore.properties` and fill it in to sign with your own key. Without it, release builds are signed with the debug key (installable, but not suitable for Google Play and not stable across machines).
+![Inspiration gallery](docs/images/02-explore-inspiration-grid.jpg)
 
-A GitHub Actions workflow (`.github/workflows/build.yml`) builds the APK on demand (**Actions → Run workflow**).
+### 2. Camera Settings
 
-## Credits
+Customize the camera experience to suit the scene and the way you prefer to shoot.
 
-Photos in Explore are provided by [Pexels](https://www.pexels.com) and credit their photographers.
+![Camera settings: framing and preferences](docs/images/03-camera-settings-layout.jpg)
 
----
+**Framing and guidance**
+- Choose **4:3** or **16:9** aspect ratio.
+- Turn the camera grid on or off.
+- Show or hide pose dots and guidance.
 
-<div dir="rtl" align="right">
+**Language**
+- Choose between **Persian** and **English** in the settings screen.
 
-## فارسی
+![Camera settings: exposure, white balance and focus](docs/images/04-camera-settings-light-focus.jpg)
 
-**ChikChik** یک اپ دوربین اندروید برای بازسازی ژست است. عکس مرجع را روی پیش‌نمایش زنده‌ی دوربین بگذارید، راهنمایی‌های ژست را دنبال کنید و از بخش کاوش ایده‌های تازه پیدا کنید.
+**Image controls**
+- Adjust exposure compensation.
+- Select a white-balance preset:
+  - Auto
+  - Incandescent
+  - Fluorescent
+  - Warm Fluorescent
+  - Daylight
+  - Cloudy
+  - Twilight
+  - Shade
+- Choose **Auto** or **Manual** focus.
 
-### امکانات
+### 3. Camera screen
 
-- **دوربین** — تعویض دوربین جلو/عقب، زوم، فوکوس با لمس، فلش، تایمر (۳ / ۵ / ۱۰ ثانیه)، خطوط راهنما (Grid)، کنترل نوردهی و تعادل رنگ سفید.
-- **عکس مرجع (Overlay)** — یک عکس از گالری انتخاب و روی پیش‌نمایش قرار دهید: تنظیم شفافیت، جابه‌جایی، بزرگ/کوچک کردن با دو انگشت، چرخش، قفل، بازنشانی و برعکس کردن (Flip) افقی.
-- **راهنمای ژست (Pose Coach)** — تشخیص زنده‌ی ژست با نقطه‌ها و راهنمایی کوتاه روی صفحه که می‌گوید چطور با عکس مرجع هماهنگ شوید. در تنظیمات می‌توانید نقاط و راهنمایی‌ها را نمایش دهید یا مخفی کنید.
-- **کاوش و الهام** — جستجو و فیلتر عکس‌های ژست (جنسیت، سبک، نوع ژست)، علاقه‌مندی‌ها، تاریخچه، ایده‌های مشابه و دکمه‌ی **استفاده به‌عنوان مرجع** برای فرستادن عکس مستقیم به دوربین.
-- **ذخیره‌ی عکس‌ها** — عکس‌ها در آلبوم `ChikChik` ذخیره می‌شوند و قابل اشتراک‌گذاری‌اند.
-- **فارسی / انگلیسی** — زبان را از تنظیمات عوض کنید.
-- **تنظیمات** — Grid، نقاط و راهنمایی ژست، زبان، ارتباط با من و بخش درباره (نسخه‌ی ۱.۰.۰).
+Use the camera preview to frame the subject and adjust the visible shooting controls before capturing a photo.
 
-### حریم خصوصی
+![Camera preview](docs/images/05-camera-preview.jpg)
 
-- تشخیص ژست **روی خود گوشی** انجام می‌شود (مدل‌های ML Kit داخل اپ). هیچ تصویری از دوربین آپلود نمی‌شود.
-- دسترسی اینترنت **فقط** برای بخش کاوش و دریافت عکس از Pexels استفاده می‌شود.
-- دسترسی دوربین برای قابلیت‌های دوربین لازم است.
+The supplied camera screen shows:
+- A live camera preview.
+- On-screen framing guidance.
+- Camera options in the top toolbar.
+- An exposure/lighting adjustment control.
+- A zoom control with a displayed zoom level.
+- A **Change Photo** option.
+- A dedicated shutter button.
 
-### ساخت (Build)
+![Camera controls](docs/images/06-camera-controls.jpg)
 
-1. از <https://www.pexels.com/api/> یک کلید API رایگان بگیرید.
-2. فایل `secrets.properties.example` را به `secrets.properties` کپی کنید و `PEXELS_API_KEY` را بنویسید
-   (یا آن را به‌صورت متغیر محیطی `PEXELS_API_KEY` بدهید). این فایل را هرگز در گیت قرار ندهید.
-3. ساخت:
-   ```bash
-   ./gradlew assembleRelease
-   ```
-   خروجی: `app/build/outputs/apk/release/app-release.apk`
+## Screenshots
 
-**APK کم‌حجم‌تر برای گوشی‌های جدید (فقط ARM ۶۴ بیتی):**
-```bash
-./gradlew assembleRelease -PabiOnly=arm64-v8a
-```
-بدون این گزینه، APK یونیورسال است (arm64-v8a، armeabi-v7a، x86، x86_64) و حجم بیشتری دارد.
+The screenshots above are cropped from the app screens provided for this README. They are intended to illustrate the visible free-version interface, not to claim features that are not shown.
 
-**امضا:** برای امضا با کلید خودتان، `keystore.properties.example` را به `keystore.properties` کپی و پر کنید. بدون آن، نسخه‌ی Release با کلید debug امضا می‌شود (قابل نصب است، ولی برای گوگل‌پلی مناسب نیست و روی ماشین‌های مختلف کلید ثابتی ندارد).
+## Project status
 
-یک workflow در GitHub Actions (`.github/workflows/build.yml`) هم هست که APK را در صورت درخواست می‌سازد (**Actions ← Run workflow**).
+This README is based on the currently supplied UI screenshots. The following details have not yet been confirmed and are intentionally left unspecified:
 
-### منابع
+- Minimum Android version and supported device list
+- App version and release channel
+- Installation / download link
+- Whether favorites and history sync across devices
+- Which features, if any, are exclusive to a paid edition
+- Privacy policy and data-handling details
 
-عکس‌های بخش کاوش از [Pexels](https://www.pexels.com) هستند و نام عکاس‌ها در اپ نمایش داده می‌شود.
+## Getting started
 
-</div>
+When a public build or source repository is available, add the verified installation instructions here. Do not publish placeholder package names, download links, or build commands as if they were real.
+
+## Feedback and contributions
+
+For bug reports, feature requests, or contributions, use the repository's **Issues** and **Pull requests** sections once they are enabled.
+
+## License
+
+No license has been specified yet. Add a license only after the project owner has selected the terms under which the app and its source code may be used.
